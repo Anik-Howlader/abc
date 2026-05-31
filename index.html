@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EduConnect — Social Feed</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:#F3F4F6;color:#1F2937;min-height:100vh}
+
+:root{
+  --teal:#1D9E75;--teal-dark:#0F6E56;--teal-light:#E1F5EE;--teal-mid:#9FE1CB;
+  --navy:#0F1F3D;--white:#fff;--gray-50:#F9FAFB;--gray-100:#F3F4F6;
+  --gray-200:#E5E7EB;--gray-400:#9CA3AF;--gray-600:#4B5563;--gray-800:#1F2937;
+  --amber:#BA7517;--amber-light:#FAEEDA;--sky-light:#E6F1FB;
+  --radius:8px;--radius-lg:14px;
+}
+
+/* TOPBAR */
+.topbar{
+  background:#fff;border-bottom:1px solid var(--gray-200);
+  position:sticky;top:0;z-index:999;
+  box-shadow:0 1px 4px rgba(0,0,0,.07);
+}
+.topbar-inner{
+  max-width:1280px;margin:0 auto;padding:0 20px;
+  height:58px;display:flex;align-items:center;gap:16px;
+}
+.logo{
+  font-size:22px;font-weight:700;color:var(--teal);
+  display:flex;align-items:center;gap:8px;white-space:nowrap;
+  text-decoration:none;
+}
+.logo-dot{color:#F59E0B}
+.logo i{font-size:22px}
+.search-bar{
+  flex:1;max-width:440px;
+  display:flex;align-items:center;
+  background:var(--gray-100);border:1.5px solid var(--gray-200);
+  border-radius:30px;padding:7px 16px;gap:8px;
+  transition:border-color .2s,box-shadow .2s;
+}
+.search-bar:focus-within{border-color:var(--teal);box-shadow:0 0 0 3px rgba(29,158,117,.1)}
+.search-bar input{border:none;background:none;outline:none;width:100%;font-size:14px;font-family:'DM Sans',sans-serif;color:var(--gray-800)}
+.search-bar input::placeholder{color:var(--gray-400)}
+.search-bar i{color:var(--gray-400);font-size:18px;flex-shrink:0}
+.topbar-nav{margin-left:auto;display:flex;align-items:center;gap:6px}
+.top-icon-btn{
+  position:relative;background:none;border:none;cursor:pointer;
+  width:40px;height:40px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  color:var(--gray-600);transition:background .15s;font-size:20px;
+}
+.top-icon-btn:hover{background:var(--gray-100);color:var(--teal)}
+.notif-badge{
+  position:absolute;top:4px;right:4px;
+  background:#EF4444;color:#fff;font-size:9px;font-weight:700;
+  border-radius:10px;padding:1px 5px;border:1.5px solid #fff;
+  line-height:1.2;
+}
+.me-avatar-top{
+  width:34px;height:34px;border-radius:50%;
+  background:var(--teal-light);
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;cursor:pointer;border:2px solid var(--teal-mid);
+  transition:border-color .2s;
+}
+.me-avatar-top:hover{border-color:var(--teal)}
+
+/* LAYOUT */
+.layout{
+  max-width:1280px;margin:0 auto;padding:20px;
+  display:grid;grid-template-columns:260px 1fr 290px;gap:20px;
+  align-items:start;
+}
+
+/* SIDEBAR LEFT */
+.sidebar-l{
+  background:#fff;border-radius:var(--radius-lg);
+  border:1px solid var(--gray-200);padding:16px;
+  position:sticky;top:78px;
+}
+.profile-mini{
+  display:flex;align-items:center;gap:10px;
+  padding-bottom:14px;border-bottom:1px solid var(--gray-200);margin-bottom:14px;
+}
+.pm-avatar{
+  width:44px;height:44px;border-radius:50%;
+  background:var(--teal-light);display:flex;align-items:center;
+  justify-content:center;font-size:20px;
+  border:2px solid var(--teal-mid);
+}
+.pm-name{font-size:14px;font-weight:600;color:var(--gray-800)}
+.pm-role{font-size:12px;color:var(--gray-400);margin-top:1px}
+.profile-stats{
+  display:grid;grid-template-columns:1fr 1fr 1fr;
+  gap:1px;background:var(--gray-200);
+  border-radius:var(--radius);overflow:hidden;margin-bottom:16px;
+}
+.pstat{background:#fff;padding:10px 6px;text-align:center;cursor:pointer;transition:background .15s}
+.pstat:hover{background:var(--gray-50)}
+.pstat-num{font-size:17px;font-weight:700;color:var(--gray-800)}
+.pstat-lbl{font-size:10px;color:var(--gray-400);margin-top:1px}
+.nav-item{
+  display:flex;align-items:center;gap:10px;padding:9px 10px;
+  border-radius:var(--radius);cursor:pointer;font-size:14px;
+  color:var(--gray-600);margin-bottom:2px;transition:background .15s,color .15s;
+  border:none;background:none;width:100%;text-align:left;font-family:'DM Sans',sans-serif;
+}
+.nav-item:hover,.nav-item.active{background:var(--teal-light);color:var(--teal-dark)}
+.nav-item.active{font-weight:600}
+.nav-item i{font-size:19px;flex-shrink:0}
+.nav-badge{
+  margin-left:auto;background:var(--teal);color:#fff;
+  font-size:10px;font-weight:700;border-radius:10px;padding:1px 7px;
+}
+.sec-label{
+  font-size:10px;color:var(--gray-400);text-transform:uppercase;
+  letter-spacing:1.2px;margin:14px 0 8px 4px;font-weight:600;
+}
+.topic-chip{
+  display:inline-flex;align-items:center;gap:4px;
+  background:var(--teal-light);color:var(--teal-dark);
+  border-radius:20px;padding:4px 11px;font-size:12px;font-weight:500;
+  margin:2px;cursor:pointer;border:none;font-family:'DM Sans',sans-serif;
+  transition:background .15s;
+}
+.topic-chip:hover{background:var(--teal-mid)}
+
+/* FEED */
+.feed-col{display:flex;flex-direction:column;gap:14px}
+
+/* Stories */
+.stories-wrap{
+  background:#fff;border:1px solid var(--gray-200);
+  border-radius:var(--radius-lg);padding:14px;
+}
+.stories-row{
+  display:flex;gap:12px;overflow-x:auto;padding-bottom:4px;
+}
+.stories-row::-webkit-scrollbar{display:none}
+.story{flex-shrink:0;text-align:center;cursor:pointer}
+.story-ring{
+  width:56px;height:56px;border-radius:50%;
+  padding:2.5px;background:linear-gradient(135deg,var(--teal),#3B82F6);
+  margin-bottom:5px;
+}
+.story-ring.seen{background:var(--gray-200)}
+.story-inner{
+  width:100%;height:100%;border-radius:50%;
+  background:var(--gray-100);
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;border:2px solid #fff;
+}
+.story span{font-size:11px;color:var(--gray-600);max-width:58px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block}
+.add-story .story-ring{background:var(--gray-100);border:2px dashed var(--gray-300);padding:0}
+.add-story .story-inner{font-size:22px;color:var(--gray-400)}
+
+/* Post composer */
+.composer{
+  background:#fff;border:1px solid var(--gray-200);
+  border-radius:var(--radius-lg);padding:14px;
+}
+.composer-row{display:flex;gap:10px;align-items:center;margin-bottom:12px}
+.me-av{
+  width:38px;height:38px;border-radius:50%;flex-shrink:0;
+  background:var(--teal-light);display:flex;align-items:center;justify-content:center;font-size:18px;
+  border:2px solid var(--teal-mid);
+}
+.composer-input{
+  flex:1;background:var(--gray-100);border:1.5px solid var(--gray-200);
+  border-radius:22px;padding:9px 16px;font-size:14px;
+  color:var(--gray-800);outline:none;cursor:pointer;
+  font-family:'DM Sans',sans-serif;transition:border-color .2s;
+}
+.composer-input:focus{border-color:var(--teal)}
+.composer-input::placeholder{color:var(--gray-400)}
+.composer-actions{
+  display:flex;gap:4px;border-top:1px solid var(--gray-100);padding-top:12px;
+}
+.comp-btn{
+  flex:1;display:flex;align-items:center;justify-content:center;gap:6px;
+  padding:8px 6px;border-radius:var(--radius);border:none;background:none;
+  cursor:pointer;font-size:13px;color:var(--gray-600);
+  font-family:'DM Sans',sans-serif;transition:background .15s,color .15s;
+}
+.comp-btn:hover{background:var(--gray-100);color:var(--teal)}
+.comp-btn i{font-size:18px}
+.comp-post{
+  flex:0;padding:8px 20px;background:var(--teal);color:#fff;
+  font-weight:600;border-radius:var(--radius);border:none;cursor:pointer;
+  font-family:'DM Sans',sans-serif;font-size:14px;
+  display:flex;align-items:center;gap:6px;
+  transition:background .2s,transform .15s;
+}
+.comp-post:hover{background:var(--teal-dark);transform:translateY(-1px)}
+.comp-post i{font-size:16px}
+
+/* Post card */
+.post-card{
+  background:#fff;border:1px solid var(--gray-200);
+  border-radius:var(--radius-lg);overflow:hidden;
+}
+.post-head{
+  display:flex;align-items:center;gap:10px;padding:14px 14px 0;
+}
+.p-avatar{
+  width:42px;height:42px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:20px;
+}
+.p-name{font-size:14px;font-weight:600;color:var(--gray-800);display:flex;align-items:center;gap:6px}
+.mentor-badge{
+  background:var(--teal-light);color:var(--teal-dark);
+  font-size:10px;font-weight:700;padding:2px 7px;border-radius:5px;
+}
+.student-badge{
+  background:#EDE9FE;color:#5B21B6;
+  font-size:10px;font-weight:700;padding:2px 7px;border-radius:5px;
+}
+.p-meta{font-size:12px;color:var(--gray-400);margin-top:1px;display:flex;align-items:center;gap:4px}
+.p-meta i{font-size:12px}
+.more-btn{
+  margin-left:auto;background:none;border:none;cursor:pointer;
+  color:var(--gray-400);padding:6px;border-radius:50%;font-size:20px;
+  transition:background .15s,color .15s;
+}
+.more-btn:hover{background:var(--gray-100);color:var(--gray-800)}
+.post-body{padding:12px 14px;font-size:14px;color:var(--gray-700);line-height:1.65}
+.hashtag{
+  display:inline-flex;align-items:center;
+  background:var(--gray-100);color:var(--gray-600);
+  border-radius:20px;padding:3px 10px;font-size:12px;margin:2px 2px 0;cursor:pointer;
+}
+.hashtag:hover{background:var(--teal-light);color:var(--teal-dark)}
+
+/* Resource embed */
+.res-embed{
+  margin:0 14px 12px;
+  border:1px solid var(--gray-200);border-radius:var(--radius);
+  padding:12px;display:flex;gap:12px;align-items:center;
+  background:var(--gray-50);cursor:pointer;transition:background .15s,border-color .15s;
+}
+.res-embed:hover{background:var(--teal-light);border-color:var(--teal-mid)}
+.res-icon-box{
+  width:46px;height:46px;border-radius:var(--radius);
+  display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;
+}
+.res-info{flex:1;min-width:0}
+.res-title{font-size:13px;font-weight:600;color:var(--gray-800);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.res-sub{font-size:11px;color:var(--gray-400);margin-top:3px}
+.res-star{color:var(--amber);font-weight:600}
+.dl-btn{color:var(--gray-400);font-size:20px}
+
+/* Session note */
+.session-note{
+  margin:0 14px 12px;
+  background:var(--gray-50);border-radius:var(--radius);
+  padding:12px;border-left:3px solid var(--teal);
+}
+.sn-label{font-size:12px;font-weight:600;color:var(--teal-dark);margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.sn-label i{font-size:14px}
+.sn-body{font-size:13px;color:var(--gray-600);line-height:1.7}
+
+/* Poll */
+.poll-wrap{padding:0 14px 12px}
+.poll-opt{
+  display:flex;align-items:center;gap:10px;padding:9px 12px;
+  border:1px solid var(--gray-200);border-radius:var(--radius);
+  margin-bottom:6px;cursor:pointer;transition:border-color .2s;
+  position:relative;overflow:hidden;background:#fff;
+}
+.poll-opt:hover{border-color:var(--teal)}
+.poll-bar{
+  position:absolute;left:0;top:0;bottom:0;
+  background:var(--teal-light);z-index:0;
+  transition:width .5s ease;
+}
+.poll-text{position:relative;z-index:1;font-size:13px;flex:1;color:var(--gray-800)}
+.poll-pct{position:relative;z-index:1;font-size:12px;font-weight:700;color:var(--teal-dark)}
+.poll-meta{font-size:11px;color:var(--gray-400);margin-top:4px}
+
+/* Star rating */
+.star-rating-row{
+  padding:0 14px 12px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+}
+.sr-label{font-size:13px;color:var(--gray-600)}
+.stars{display:flex;gap:2px}
+.star{font-size:16px;color:var(--amber);cursor:pointer;transition:transform .1s}
+.star.empty{color:var(--gray-300)}
+.star:hover{transform:scale(1.2)}
+.sr-meta{font-size:12px;color:var(--gray-400)}
+
+/* Reactions row */
+.reactions-row{
+  padding:10px 14px;display:flex;align-items:center;
+  justify-content:space-between;border-top:1px solid var(--gray-100);
+}
+.react-pills{display:flex;gap:5px}
+.react-pill{
+  display:flex;align-items:center;gap:5px;padding:6px 12px;
+  border-radius:20px;border:1px solid var(--gray-200);
+  cursor:pointer;font-size:13px;background:none;
+  font-family:'DM Sans',sans-serif;color:var(--gray-600);
+  transition:all .15s;
+}
+.react-pill:hover{border-color:var(--teal);background:var(--teal-light);color:var(--teal-dark)}
+.react-pill.liked{border-color:#EF4444;background:#FEF2F2;color:#DC2626}
+.react-pill.saved{border-color:var(--teal);background:var(--teal-light);color:var(--teal-dark)}
+.react-pill i{font-size:16px}
+.views-txt{font-size:12px;color:var(--gray-400)}
+
+/* Comments */
+.comments-section{padding:12px 14px;border-top:1px solid var(--gray-100)}
+.comment-row{display:flex;gap:9px;margin-bottom:10px;align-items:flex-start}
+.c-av{
+  width:32px;height:32px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:15px;
+}
+.c-bubble{
+  background:var(--gray-100);border-radius:0 var(--radius) var(--radius) var(--radius);
+  padding:8px 12px;flex:1;
+}
+.c-name{
+  font-size:12px;font-weight:600;color:var(--gray-800);
+  margin-bottom:3px;display:flex;align-items:center;gap:6px;
+}
+.c-text{font-size:13px;color:var(--gray-600);line-height:1.5}
+.c-actions{display:flex;gap:12px;margin-top:5px}
+.c-act{
+  background:none;border:none;cursor:pointer;
+  font-size:11px;color:var(--gray-400);
+  font-family:'DM Sans',sans-serif;
+  display:flex;align-items:center;gap:3px;transition:color .15s;
+}
+.c-act:hover{color:var(--teal)}
+.c-act i{font-size:14px}
+.comment-input-row{display:flex;gap:8px;align-items:center;margin-top:6px}
+.c-field{
+  flex:1;background:var(--gray-100);border:1.5px solid var(--gray-200);
+  border-radius:20px;padding:8px 14px;font-size:13px;outline:none;
+  font-family:'DM Sans',sans-serif;color:var(--gray-800);
+  transition:border-color .2s;
+}
+.c-field:focus{border-color:var(--teal)}
+.c-field::placeholder{color:var(--gray-400)}
+.send-btn{
+  background:var(--teal);border:none;border-radius:50%;
+  width:32px;height:32px;display:flex;align-items:center;
+  justify-content:center;cursor:pointer;flex-shrink:0;
+  transition:background .2s;
+}
+.send-btn:hover{background:var(--teal-dark)}
+.send-btn i{color:#fff;font-size:16px}
+.show-more{
+  width:100%;background:none;border:none;cursor:pointer;
+  font-size:13px;color:var(--gray-400);padding:8px;
+  font-family:'DM Sans',sans-serif;
+  display:flex;align-items:center;justify-content:center;gap:4px;
+  transition:color .15s;
+}
+.show-more:hover{color:var(--teal)}
+.show-more i{font-size:15px}
+
+/* RIGHT SIDEBAR */
+.sidebar-r{
+  display:flex;flex-direction:column;gap:14px;
+  position:sticky;top:78px;
+}
+.widget-card{
+  background:#fff;border:1px solid var(--gray-200);
+  border-radius:var(--radius-lg);padding:16px;
+}
+.widget-title{
+  font-size:13px;font-weight:700;color:var(--gray-800);
+  margin-bottom:14px;display:flex;align-items:center;gap:8px;
+}
+.widget-title i{font-size:17px;color:var(--teal)}
+.trend-item{
+  display:flex;align-items:center;gap:10px;padding:8px 0;
+  border-bottom:1px solid var(--gray-100);cursor:pointer;
+  transition:background .15s;
+}
+.trend-item:last-child{border-bottom:none}
+.trend-item:hover .trend-tag{color:var(--teal)}
+.trend-num{font-size:11px;color:var(--gray-400);width:16px;text-align:right}
+.trend-text{flex:1}
+.trend-tag{font-size:13px;font-weight:600;color:var(--gray-800);transition:color .15s}
+.trend-count{font-size:11px;color:var(--gray-400);margin-top:1px}
+.trend-icon{font-size:18px;color:var(--gray-300)}
+.suggest-item{
+  display:flex;align-items:center;gap:10px;margin-bottom:12px;
+}
+.suggest-item:last-child{margin-bottom:0}
+.sug-av{
+  width:40px;height:40px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:18px;
+}
+.sug-info{flex:1}
+.sug-name{font-size:13px;font-weight:600;color:var(--gray-800)}
+.sug-role{font-size:11px;color:var(--gray-400);margin-top:1px}
+.online-dot{
+  width:8px;height:8px;border-radius:50%;background:#22C55E;
+  border:1.5px solid #fff;flex-shrink:0;
+}
+.follow-btn{
+  background:none;border:1.5px solid var(--gray-200);border-radius:20px;
+  padding:5px 14px;font-size:12px;cursor:pointer;
+  font-family:'DM Sans',sans-serif;color:var(--gray-800);
+  transition:all .15s;font-weight:600;
+}
+.follow-btn:hover{border-color:var(--teal);color:var(--teal)}
+.follow-btn.following{background:var(--teal);border-color:var(--teal);color:#fff}
+.activity-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.act-box{
+  background:var(--gray-50);border-radius:var(--radius);
+  padding:10px 8px;text-align:center;border:1px solid var(--gray-100);
+}
+.act-num{font-size:18px;font-weight:700;color:var(--gray-800)}
+.act-lbl{font-size:10px;color:var(--gray-400);margin-top:2px}
+.footer-links{font-size:11px;color:var(--gray-400);line-height:1.9;padding:4px}
+
+/* TOAST */
+.toast{
+  position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);
+  background:var(--navy);color:#fff;
+  padding:10px 20px;border-radius:var(--radius);
+  font-size:13px;font-weight:500;
+  box-shadow:0 4px 20px rgba(0,0,0,.18);
+  transition:transform .3s cubic-bezier(.34,1.56,.64,1),opacity .3s;
+  opacity:0;z-index:9999;white-space:nowrap;
+  display:flex;align-items:center;gap:8px;
+  pointer-events:none;
+}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+
+/* RESPONSIVE */
+@media(max-width:1100px){
+  .layout{grid-template-columns:220px 1fr 250px}
+}
+@media(max-width:860px){
+  .layout{grid-template-columns:1fr;padding:12px}
+  .sidebar-l,.sidebar-r{display:none}
+  .topbar-inner{padding:0 14px}
+}
+@media(max-width:520px){
+  .comp-btn span{display:none}
+  .search-bar{max-width:180px}
+}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<nav class="topbar">
+  <div class="topbar-inner">
+    <a href="#" class="logo">
+      <i class="ti ti-school" aria-hidden="true"></i>Edu<span class="logo-dot">.</span>Connect
+    </a>
+    <div class="search-bar">
+      <i class="ti ti-search" aria-hidden="true"></i>
+      <input placeholder="Search courses, resources, mentors…" onkeydown="if(event.key==='Enter'&&this.value.trim()){toast('Searching: &quot;'+this.value+'&quot;');this.value=''}">
+    </div>
+    <div class="topbar-nav">
+      <button class="top-icon-btn" title="Home" onclick="toast('Home feed')"><i class="ti ti-home" aria-hidden="true"></i></button>
+      <button class="top-icon-btn" title="Messages" onclick="toast('Messages')"><i class="ti ti-message-circle" aria-hidden="true"></i></button>
+      <button class="top-icon-btn" title="Notifications" onclick="toast('Notifications')">
+        <i class="ti ti-bell" aria-hidden="true"></i>
+        <span class="notif-badge">5</span>
+      </button>
+      <button class="top-icon-btn" title="Bookmarks" onclick="toast('Saved resources')"><i class="ti ti-bookmark" aria-hidden="true"></i></button>
+      <div class="me-avatar-top" onclick="toast('Your profile')" title="Profile">🎓</div>
+    </div>
+  </div>
+</nav>
+
+<!-- LAYOUT -->
+<div class="layout">
+
+  <!-- LEFT SIDEBAR -->
+  <aside class="sidebar-l">
+    <div class="profile-mini">
+      <div class="pm-avatar">🎓</div>
+      <div>
+        <div class="pm-name">Akash Roy</div>
+        <div class="pm-role">HSC · Sylhet</div>
+      </div>
+    </div>
+    <div class="profile-stats">
+      <div class="pstat" onclick="toast('Following list')"><div class="pstat-num">142</div><div class="pstat-lbl">Following</div></div>
+      <div class="pstat" onclick="toast('Followers list')"><div class="pstat-num">89</div><div class="pstat-lbl">Followers</div></div>
+      <div class="pstat" onclick="toast('Your ratings')"><div class="pstat-num" style="color:var(--amber)">4.8★</div><div class="pstat-lbl">Rating</div></div>
+    </div>
+
+    <button class="nav-item active" onclick="setNav(this)"><i class="ti ti-home" aria-hidden="true"></i> Home</button>
+    <button class="nav-item" onclick="setNav(this)"><i class="ti ti-compass" aria-hidden="true"></i> Explore</button>
+    <button class="nav-item" onclick="setNav(this)"><i class="ti ti-bell" aria-hidden="true"></i> Notifications <span class="nav-badge">5</span></button>
+    <button class="nav-item" onclick="setNav(this)"><i class="ti ti-bookmark" aria-hidden="true"></i> Saved</button>
+    <button class="nav-item" onclick="setNav(this)"><i class="ti ti-users" aria-hidden="true"></i> Mentors</button>
+    <button class="nav-item" onclick="setNav(this)"><i class="ti ti-book" aria-hidden="true"></i> Resources</button>
+    <button class="nav-item" onclick="setNav(this)"><i class="ti ti-chart-bar" aria-hidden="true"></i> Progress</button>
+    <button class="nav-item" onclick="setNav(this)"><i class="ti ti-settings" aria-hidden="true"></i> Settings</button>
+
+    <div class="sec-label">Topics</div>
+    <div>
+      <button class="topic-chip" onclick="toast('Filtering: Physics')"># Physics</button>
+      <button class="topic-chip" onclick="toast('Filtering: Math')"># Math</button>
+      <button class="topic-chip" onclick="toast('Filtering: CSE')"># CSE</button>
+      <button class="topic-chip" onclick="toast('Filtering: Chemistry')"># Chemistry</button>
+      <button class="topic-chip" onclick="toast('Filtering: MBBS')"># MBBS</button>
+    </div>
+  </aside>
+
+  <!-- FEED -->
+  <main class="feed-col">
+
+    <!-- Stories -->
+    <div class="stories-wrap">
+      <div class="stories-row">
+        <div class="story add-story" onclick="toast('Create your story')">
+          <div class="story-ring"><div class="story-inner"><i class="ti ti-plus" aria-hidden="true"></i></div></div>
+          <span>Your story</span>
+        </div>
+        <div class="story" onclick="toast('Watching Karim\'s story 🎓')">
+          <div class="story-ring"><div class="story-inner">🎓</div></div>
+          <span>Karim</span>
+        </div>
+        <div class="story" onclick="toast('Watching Priya\'s story 👩‍🎓')">
+          <div class="story-ring"><div class="story-inner">👩‍🎓</div></div>
+          <span>Priya</span>
+        </div>
+        <div class="story" onclick="toast('Watching Aarav\'s story 👨‍🔬')">
+          <div class="story-ring"><div class="story-inner">👨‍🔬</div></div>
+          <span>Aarav</span>
+        </div>
+        <div class="story" onclick="toast('Watching Nadia\'s story 👩‍⚕️')">
+          <div class="story-ring seen"><div class="story-inner">👩‍⚕️</div></div>
+          <span>Nadia</span>
+        </div>
+        <div class="story" onclick="toast('Watching Rafi\'s story 📘')">
+          <div class="story-ring seen"><div class="story-inner">📘</div></div>
+          <span>Rafi</span>
+        </div>
+        <div class="story" onclick="toast('Watching Sarah\'s story')">
+          <div class="story-ring seen"><div class="story-inner">👩‍💻</div></div>
+          <span>Sarah</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Composer -->
+    <div class="composer">
+      <div class="composer-row">
+        <div class="me-av">🎓</div>
+        <input class="composer-input" placeholder="Share a tip, question, or resource with the community…">
+      </div>
+      <div class="composer-actions">
+        <button class="comp-btn" onclick="toast('Attach a resource')"><i class="ti ti-file" aria-hidden="true"></i> <span>Resource</span></button>
+        <button class="comp-btn" onclick="toast('Add photo or video')"><i class="ti ti-photo" aria-hidden="true"></i> <span>Media</span></button>
+        <button class="comp-btn" onclick="toast('Create a poll')"><i class="ti ti-chart-bar" aria-hidden="true"></i> <span>Poll</span></button>
+        <button class="comp-btn" onclick="toast('Book a live session')"><i class="ti ti-video" aria-hidden="true"></i> <span>Session</span></button>
+        <button class="comp-post" onclick="toast('Post published! ✅')"><i class="ti ti-send" aria-hidden="true"></i> Post</button>
+      </div>
+    </div>
+
+    <!-- POST 1 — Resource Share -->
+    <article class="post-card">
+      <div class="post-head">
+        <div class="p-avatar" style="background:#E1F5EE">🎓</div>
+        <div>
+          <div class="p-name">Karim Ahmed <span class="mentor-badge">Mentor</span></div>
+          <div class="p-meta"><i class="ti ti-clock" aria-hidden="true"></i> 2h ago · <i class="ti ti-world" aria-hidden="true"></i> Public</div>
+        </div>
+        <button class="more-btn" onclick="toast('Post options')" aria-label="More options"><i class="ti ti-dots-vertical" aria-hidden="true"></i></button>
+      </div>
+      <div class="post-body">
+        Just uploaded a complete guide to <strong>Miller Indices &amp; Crystallography</strong> — 24 pages with worked examples and 3D visualizations. Totally free for everyone! Drop a ⬇ in the comments if it helped you 🙌
+        <br><br>
+        <span class="hashtag">#Physics</span>
+        <span class="hashtag">#CrystalStructure</span>
+        <span class="hashtag">#HSC2025</span>
+        <span class="hashtag">#FreePDF</span>
+      </div>
+      <div class="res-embed" onclick="toast('Downloading Miller Indices Guide… 📥')">
+        <div class="res-icon-box" style="background:#FEE2E2">📄</div>
+        <div class="res-info">
+          <div class="res-title">Miller Indices Complete Guide — 24 pages</div>
+          <div class="res-sub">PDF · 2.4 MB · 1,240 downloads · <span class="res-star">★★★★★ 4.9</span> (98 ratings)</div>
+        </div>
+        <i class="ti ti-download dl-btn" aria-hidden="true"></i>
+      </div>
+      <div class="reactions-row">
+        <div class="react-pills">
+          <button class="react-pill liked" id="like1" onclick="toggleLike('like1','like1c','247')">
+            <i class="ti ti-heart" aria-hidden="true"></i> <span id="like1c">248</span>
+          </button>
+          <button class="react-pill" id="save1" onclick="toggleSave('save1','save1c','89')">
+            <i class="ti ti-bookmark" aria-hidden="true"></i> <span id="save1c">89</span>
+          </button>
+          <button class="react-pill" onclick="toast('Share this post')">
+            <i class="ti ti-share" aria-hidden="true"></i> Share
+          </button>
+        </div>
+        <span class="views-txt">3.1k views</span>
+      </div>
+      <div class="comments-section">
+        <div class="comment-row">
+          <div class="c-av" style="background:#F3E8FF">👩‍🎓</div>
+          <div class="c-bubble">
+            <div class="c-name">Fatima Khan <span class="student-badge">Student</span></div>
+            <div class="c-text">This is amazing Karim bhai! The FCC section cleared everything up for me ⬇</div>
+            <div class="c-actions">
+              <button class="c-act" onclick="toast('Liked comment')"><i class="ti ti-heart" aria-hidden="true"></i> 12</button>
+              <button class="c-act" onclick="toast('Replying to Fatima…')"><i class="ti ti-message" aria-hidden="true"></i> Reply</button>
+              <span style="font-size:10px;color:var(--gray-400);margin-left:auto">1h ago</span>
+            </div>
+          </div>
+        </div>
+        <div class="comment-row">
+          <div class="c-av" style="background:#E0F2FE">👨‍🎓</div>
+          <div class="c-bubble">
+            <div class="c-name">Akash Roy <span class="mentor-badge" style="background:#FEF3C7;color:#92400E">Top Student</span></div>
+            <div class="c-text">Scored 95% using this last week. Absolute gem 🔥 Thank you!</div>
+            <div class="c-actions">
+              <button class="c-act" onclick="toast('Liked comment')"><i class="ti ti-heart" aria-hidden="true"></i> 34</button>
+              <button class="c-act" onclick="toast('Replying to Akash…')"><i class="ti ti-message" aria-hidden="true"></i> Reply</button>
+              <span style="font-size:10px;color:var(--gray-400);margin-left:auto">45m ago</span>
+            </div>
+          </div>
+        </div>
+        <div class="comment-input-row">
+          <div class="c-av me-av" style="width:32px;height:32px;font-size:15px">🎓</div>
+          <input class="c-field" placeholder="Write a comment…" onkeydown="if(event.key==='Enter'&&this.value.trim()){postComment(this)}">
+          <button class="send-btn" onclick="sendComment()" aria-label="Send comment"><i class="ti ti-send" aria-hidden="true"></i></button>
+        </div>
+        <button class="show-more" onclick="toast('Loading more comments…')"><i class="ti ti-chevron-down" aria-hidden="true"></i> View 46 more comments</button>
+      </div>
+    </article>
+
+    <!-- POST 2 — Poll -->
+    <article class="post-card">
+      <div class="post-head">
+        <div class="p-avatar" style="background:#EDE9FE">👩‍🎓</div>
+        <div>
+          <div class="p-name">Priya Sharma <span class="mentor-badge">Mentor</span></div>
+          <div class="p-meta"><i class="ti ti-clock" aria-hidden="true"></i> 5h ago · <i class="ti ti-users" aria-hidden="true"></i> Followers</div>
+        </div>
+        <button class="more-btn" onclick="toast('Post options')" aria-label="More options"><i class="ti ti-dots-vertical" aria-hidden="true"></i></button>
+      </div>
+      <div class="post-body">
+        Which topic should I make a free video series on next? 🗳️ Vote and let me know! I'll start recording this weekend.
+      </div>
+      <div class="poll-wrap">
+        <div class="poll-opt" onclick="votePoll(this)"><div class="poll-bar" style="width:62%"></div><span class="poll-text">Calculus &amp; Limits</span><span class="poll-pct">62%</span></div>
+        <div class="poll-opt" onclick="votePoll(this)"><div class="poll-bar" style="width:24%"></div><span class="poll-text">Thermodynamics</span><span class="poll-pct">24%</span></div>
+        <div class="poll-opt" onclick="votePoll(this)"><div class="poll-bar" style="width:14%"></div><span class="poll-text">Organic Chemistry</span><span class="poll-pct">14%</span></div>
+        <div class="poll-meta">832 votes · 18 hours left</div>
+      </div>
+      <div class="reactions-row">
+        <div class="react-pills">
+          <button class="react-pill" id="like2" onclick="toggleLike('like2','like2c','118')"><i class="ti ti-heart" aria-hidden="true"></i> <span id="like2c">118</span></button>
+          <button class="react-pill" onclick="toast('34 comments')"><i class="ti ti-message" aria-hidden="true"></i> 34</button>
+          <button class="react-pill" onclick="toast('Sharing poll…')"><i class="ti ti-share" aria-hidden="true"></i> Share</button>
+        </div>
+        <span class="views-txt">1.8k views</span>
+      </div>
+    </article>
+
+    <!-- POST 3 — Session Recap + Star Rating -->
+    <article class="post-card">
+      <div class="post-head">
+        <div class="p-avatar" style="background:#DCFCE7">👨‍🔬</div>
+        <div>
+          <div class="p-name">Aarav Patel <span class="mentor-badge">Mentor</span></div>
+          <div class="p-meta"><i class="ti ti-clock" aria-hidden="true"></i> 8h ago · <i class="ti ti-world" aria-hidden="true"></i> Public</div>
+        </div>
+        <button class="more-btn" onclick="toast('Post options')" aria-label="More options"><i class="ti ti-dots-vertical" aria-hidden="true"></i></button>
+      </div>
+      <div class="post-body">
+        Just wrapped a 20-min session on <strong>Wave Optics</strong> with 3 students. Here's my quick summary — pin this and share with your classmates! 📌
+      </div>
+      <div class="session-note">
+        <div class="sn-label"><i class="ti ti-notes" aria-hidden="true"></i> Session Summary — Wave Optics</div>
+        <div class="sn-body">
+          • Snell's Law and total internal reflection<br>
+          • Thin film interference (Newton's rings)<br>
+          • Diffraction grating formula → nλ = d sinθ<br>
+          • Practice: 5 solved problems attached below
+        </div>
+      </div>
+      <div class="res-embed" onclick="toast('Downloading Wave Optics notes… 📥')">
+        <div class="res-icon-box" style="background:#E0F2FE">📘</div>
+        <div class="res-info">
+          <div class="res-title">Wave Optics — Solved Problems Set</div>
+          <div class="res-sub">PDF · 0.9 MB · 540 downloads · <span class="res-star">★★★★★ 4.8</span></div>
+        </div>
+        <i class="ti ti-download dl-btn" aria-hidden="true"></i>
+      </div>
+      <div class="star-rating-row">
+        <span class="sr-label">Rate this session:</span>
+        <div class="stars" id="sess-stars">
+          <span class="star" onclick="rateStar(1)">★</span>
+          <span class="star" onclick="rateStar(2)">★</span>
+          <span class="star" onclick="rateStar(3)">★</span>
+          <span class="star" onclick="rateStar(4)">★</span>
+          <span class="star empty" onclick="rateStar(5)">★</span>
+        </div>
+        <span class="sr-meta">(4.8 avg · 38 ratings)</span>
+      </div>
+      <div class="reactions-row">
+        <div class="react-pills">
+          <button class="react-pill" id="like3" onclick="toggleLike('like3','like3c','93')"><i class="ti ti-heart" aria-hidden="true"></i> <span id="like3c">93</span></button>
+          <button class="react-pill" id="save3" onclick="toggleSave('save3','save3c','54')"><i class="ti ti-bookmark" aria-hidden="true"></i> <span id="save3c">54</span></button>
+          <button class="react-pill" onclick="toast('Booking a session with Aarav… 📅')"><i class="ti ti-calendar" aria-hidden="true"></i> Book Session</button>
+        </div>
+        <span class="views-txt">2.4k views</span>
+      </div>
+      <div class="comments-section">
+        <div class="comment-row">
+          <div class="c-av" style="background:#E1F5EE">🎓</div>
+          <div class="c-bubble">
+            <div class="c-name">Rafi Hasan <span class="student-badge">Student</span></div>
+            <div class="c-text">The diffraction grating formula finally clicked after this summary. Book a session — it's worth every taka!</div>
+            <div class="c-actions">
+              <button class="c-act" onclick="toast('Liked')"><i class="ti ti-heart" aria-hidden="true"></i> 18</button>
+              <button class="c-act" onclick="toast('Replying…')"><i class="ti ti-message" aria-hidden="true"></i> Reply</button>
+              <span style="font-size:10px;color:var(--gray-400);margin-left:auto">3h ago</span>
+            </div>
+          </div>
+        </div>
+        <div class="comment-input-row">
+          <div class="c-av me-av" style="width:32px;height:32px;font-size:15px">🎓</div>
+          <input class="c-field" placeholder="Write a comment…" onkeydown="if(event.key==='Enter'&&this.value.trim()){postComment(this)}">
+          <button class="send-btn" aria-label="Send comment"><i class="ti ti-send" aria-hidden="true"></i></button>
+        </div>
+        <button class="show-more" onclick="toast('Loading more comments…')"><i class="ti ti-chevron-down" aria-hidden="true"></i> View 22 more comments</button>
+      </div>
+    </article>
+
+    <!-- POST 4 — Question from student -->
+    <article class="post-card">
+      <div class="post-head">
+        <div class="p-avatar" style="background:#FEF3C7">👩‍💻</div>
+        <div>
+          <div class="p-name">Sarah Ahmed</div>
+          <div class="p-meta"><i class="ti ti-clock" aria-hidden="true"></i> 11h ago · <i class="ti ti-users" aria-hidden="true"></i> Public</div>
+        </div>
+        <button class="more-btn" onclick="toast('Post options')" aria-label="More options"><i class="ti ti-dots-vertical" aria-hidden="true"></i></button>
+      </div>
+      <div class="post-body">
+        ❓ Can someone explain the difference between <strong>FCC and BCC</strong> crystal structures in simple terms? I keep mixing up the coordination numbers. Any good resources?
+        <br><br>
+        <span class="hashtag">#Physics</span>
+        <span class="hashtag">#CrystalStructure</span>
+        <span class="hashtag">#AskTheCommunity</span>
+      </div>
+      <div class="reactions-row">
+        <div class="react-pills">
+          <button class="react-pill" id="like4" onclick="toggleLike('like4','like4c','27')"><i class="ti ti-heart" aria-hidden="true"></i> <span id="like4c">27</span></button>
+          <button class="react-pill" onclick="toast('9 comments — click to read')"><i class="ti ti-message" aria-hidden="true"></i> 9</button>
+          <button class="react-pill" onclick="toast('Share this question')"><i class="ti ti-share" aria-hidden="true"></i> Share</button>
+          <button class="react-pill" onclick="toast('Answer Sarah\'s question — open editor')"><i class="ti ti-pencil" aria-hidden="true"></i> Answer</button>
+        </div>
+        <span class="views-txt">640 views</span>
+      </div>
+    </article>
+
+  </main>
+
+  <!-- RIGHT SIDEBAR -->
+  <aside class="sidebar-r">
+    <div class="widget-card">
+      <div class="widget-title"><i class="ti ti-trending-up" aria-hidden="true"></i> Trending Topics</div>
+      <div class="trend-item" onclick="toast('Browsing #MillerIndices')">
+        <span class="trend-num">1</span>
+        <div class="trend-text"><div class="trend-tag">#MillerIndices</div><div class="trend-count">3.2k posts</div></div>
+        <i class="ti ti-flame trend-icon" aria-hidden="true"></i>
+      </div>
+      <div class="trend-item" onclick="toast('Browsing #HSCPhysics2025')">
+        <span class="trend-num">2</span>
+        <div class="trend-text"><div class="trend-tag">#HSCPhysics2025</div><div class="trend-count">2.8k posts</div></div>
+        <i class="ti ti-trending-up trend-icon" aria-hidden="true"></i>
+      </div>
+      <div class="trend-item" onclick="toast('Browsing #Calculus')">
+        <span class="trend-num">3</span>
+        <div class="trend-text"><div class="trend-tag">#Calculus</div><div class="trend-count">1.9k posts</div></div>
+      </div>
+      <div class="trend-item" onclick="toast('Browsing #BUETPrep')">
+        <span class="trend-num">4</span>
+        <div class="trend-text"><div class="trend-tag">#BUETPrep</div><div class="trend-count">1.4k posts</div></div>
+      </div>
+      <div class="trend-item" onclick="toast('Browsing #OrganicChem')">
+        <span class="trend-num">5</span>
+        <div class="trend-text"><div class="trend-tag">#OrganicChem</div><div class="trend-count">980 posts</div></div>
+      </div>
+    </div>
+
+    <div class="widget-card">
+      <div class="widget-title"><i class="ti ti-user-plus" aria-hidden="true"></i> Suggested Mentors</div>
+      <div class="suggest-item">
+        <div class="sug-av" style="background:#E1F5EE">🎓</div>
+        <div class="sug-info">
+          <div class="sug-name">Karim Ahmed</div>
+          <div class="sug-role">BUET CSE · ★ 4.9</div>
+        </div>
+        <div class="online-dot"></div>
+        <button class="follow-btn" onclick="followUser(this)">Follow</button>
+      </div>
+      <div class="suggest-item">
+        <div class="sug-av" style="background:#EDE9FE">👩‍🎓</div>
+        <div class="sug-info">
+          <div class="sug-name">Priya Sharma</div>
+          <div class="sug-role">IIT Delhi · ★ 4.8</div>
+        </div>
+        <div class="online-dot"></div>
+        <button class="follow-btn following" onclick="followUser(this)">Following</button>
+      </div>
+      <div class="suggest-item">
+        <div class="sug-av" style="background:#DCFCE7">👩‍⚕️</div>
+        <div class="sug-info">
+          <div class="sug-name">Nadia Islam</div>
+          <div class="sug-role">DMCH · ★ 5.0</div>
+        </div>
+        <button class="follow-btn" onclick="followUser(this)">Follow</button>
+      </div>
+      <div class="suggest-item">
+        <div class="sug-av" style="background:#FEF3C7">👨‍🔬</div>
+        <div class="sug-info">
+          <div class="sug-name">Aarav Patel</div>
+          <div class="sug-role">DU Physics · ★ 4.7</div>
+        </div>
+        <div class="online-dot"></div>
+        <button class="follow-btn" onclick="followUser(this)">Follow</button>
+      </div>
+    </div>
+
+    <div class="widget-card">
+      <div class="widget-title"><i class="ti ti-bolt" aria-hidden="true"></i> Your Activity</div>
+      <div class="activity-grid">
+        <div class="act-box"><div class="act-num">12</div><div class="act-lbl">Resources saved</div></div>
+        <div class="act-box"><div class="act-num" style="color:var(--teal)">240</div><div class="act-lbl">Credits earned</div></div>
+        <div class="act-box"><div class="act-num">7</div><div class="act-lbl">Sessions done</div></div>
+        <div class="act-box"><div class="act-num" style="color:var(--amber)">★4.8</div><div class="act-lbl">Your rating</div></div>
+      </div>
+    </div>
+
+    <div class="footer-links">
+      Privacy · Terms · Cookies · About<br>
+      Help · Careers · Advertise<br>
+      © 2025 EduConnect · Made in Bangladesh 🇧🇩
+    </div>
+  </aside>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast-el" role="status" aria-live="polite"></div>
+
+<script>
+function toast(msg){
+  var el=document.getElementById('toast-el');
+  el.textContent=msg;
+  el.classList.add('show');
+  clearTimeout(el._t);
+  el._t=setTimeout(function(){el.classList.remove('show')},2400);
+}
+
+function setNav(el){
+  document.querySelectorAll('.nav-item').forEach(function(n){n.classList.remove('active')});
+  el.classList.add('active');
+  var label=el.textContent.trim().replace(/\d+/g,'').trim();
+  toast('Opening '+label+'…');
+}
+
+function toggleLike(id,cid,base){
+  var btn=document.getElementById(id);
+  var cnt=document.getElementById(cid);
+  var on=btn.classList.toggle('liked');
+  cnt.textContent=on?parseInt(base)+1:base;
+  toast(on?'Liked ❤️':'Removed like');
+}
+
+function toggleSave(id,cid,base){
+  var btn=document.getElementById(id);
+  var cnt=document.getElementById(cid);
+  var on=btn.classList.toggle('saved');
+  cnt.textContent=on?parseInt(base)+1:base;
+  toast(on?'Saved to bookmarks 🔖':'Removed from bookmarks');
+}
+
+function followUser(btn){
+  var on=btn.classList.toggle('following');
+  btn.textContent=on?'Following':'Follow';
+  toast(on?'Now following! 🎉':'Unfollowed');
+}
+
+function votePoll(el){
+  toast('Vote recorded! ✅');
+  el.querySelector('.poll-bar').style.outline='2px solid var(--teal)';
+}
+
+function rateStar(n){
+  var stars=document.querySelectorAll('#sess-stars .star');
+  stars.forEach(function(s,i){
+    s.className='star'+(i>=n?' empty':'');
+  });
+  toast('Rated '+n+' star'+(n>1?'s':'')+' ★');
+}
+
+function postComment(input){
+  toast('Comment posted! 💬');
+  input.value='';
+}
+
+function sendComment(){
+  var fields=document.querySelectorAll('.c-field');
+  var last=fields[fields.length-1];
+  if(last&&last.value.trim()){
+    toast('Comment posted! 💬');
+    last.value='';
+  } else {
+    toast('Type something first…');
+  }
+}
+</script>
+</body>
+</html>
